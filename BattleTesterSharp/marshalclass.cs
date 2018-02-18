@@ -21,9 +21,9 @@ namespace MarshalClass
     [StructLayout(LayoutKind.Sequential)]
     public struct heroStat
     {
-        double attack;
-        double intel;
-        double leadership;
+        float attack;
+        float intel;
+        float leadership;
         [MarshalAs(UnmanagedType.U1)]
         bool ok;
     };
@@ -34,18 +34,18 @@ namespace MarshalClass
         heroStat hero;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
         public Int64[] troops;
-        public double attack_modifier;
-        public double defence_modifier;
-        public double life_modifier;
+        public float attack_modifier;
+        public float defence_modifier;
+        public float life_modifier;
     };
     [StructLayout(LayoutKind.Sequential)]
     public struct defender
     {
         researchStats research;
         heroStat hero;
-        public double attack_modifier;
-        public double defence_modifier;
-        public double life_modifier;
+        public float attack_modifier;
+        public float defence_modifier;
+        public float life_modifier;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
         public Int64[] troops;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 5)]

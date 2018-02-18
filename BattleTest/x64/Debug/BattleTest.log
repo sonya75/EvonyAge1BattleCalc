@@ -9,5 +9,4 @@ e:\evonyage1battlecalc\battlecalc\combatsimulator.h(73): warning C4251: 'CombatS
   e:\evonyage1battlecalc\battlecalc\combatsimulator.h(73): note: see declaration of 'std::array<int32_t,6>'
 e:\evonyage1battlecalc\battlecalc\combatsimulator.h(74): warning C4251: 'CombatSimulator::mountedTroopTypes': class 'std::array<int32_t,2>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
   e:\evonyage1battlecalc\battlecalc\combatsimulator.h(74): note: see declaration of 'std::array<int32_t,2>'
-     Creating library E:\EvonyAge1BattleCalc\x64\Debug\BattleTest.lib and object E:\EvonyAge1BattleCalc\x64\Debug\BattleTest.exp
   BattleTest.vcxproj -> E:\EvonyAge1BattleCalc\x64\Debug\BattleTest.exe

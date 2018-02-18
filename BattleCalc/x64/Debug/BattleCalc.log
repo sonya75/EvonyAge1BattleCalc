@@ -9,22 +9,27 @@ e:\evonyage1battlecalc\battlecalc\combatsimulator.h(73): warning C4251: 'CombatS
   e:\evonyage1battlecalc\battlecalc\combatsimulator.h(73): note: see declaration of 'std::array<int32_t,6>'
 e:\evonyage1battlecalc\battlecalc\combatsimulator.h(74): warning C4251: 'CombatSimulator::mountedTroopTypes': class 'std::array<int32_t,2>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
   e:\evonyage1battlecalc\battlecalc\combatsimulator.h(74): note: see declaration of 'std::array<int32_t,2>'
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(106): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(107): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(153): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(167): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(168): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(181): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(195): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(196): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(211): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(243): warning C4244: 'initializing': conversion from 'double' to 'int64_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(259): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(291): warning C4244: 'initializing': conversion from 'double' to 'int64_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(308): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(339): warning C4244: '=': conversion from 'double' to 'int32_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(374): warning C4244: '=': conversion from 'double' to 'int64_t', possible loss of data
-e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(386): warning C4244: '=': conversion from 'double' to 'int64_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(51): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(51): warning C4305: 'initializing': truncation from 'double' to 'float'
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(98): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(106): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(107): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(153): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(167): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(168): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(181): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(195): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(196): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(211): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(243): warning C4244: 'initializing': conversion from 'float' to 'int64_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(259): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(291): warning C4244: 'initializing': conversion from 'float' to 'int64_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(308): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(339): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(374): warning C4244: '=': conversion from 'float' to 'int64_t', possible loss of data
+e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(386): warning C4244: '=': conversion from 'float' to 'int64_t', possible loss of data
 e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(137): warning C4101: 'damage': unreferenced local variable
 e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(132): warning C4101: 'atkerType': unreferenced local variable
 e:\evonyage1battlecalc\battlecalc\battlecalc.cpp(138): warning C4101: 'damage1': unreferenced local variable

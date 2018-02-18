@@ -35,11 +35,11 @@ troopStat CombatSimulator::baseFortificationStats[5] = {
 	troopStat{}, // rolling logs :: TODO
 	troopStat{} // trebuchet :: TODO
 };
-double CombatSimulator::damageModifiers[12][12] = {
+float CombatSimulator::damageModifiers[12][12] = {
 	{}, // modifiers for worker attacking other troops
 	{}, // for warrior
 	{}, // for scout
-	{ 0,0,0,0,0,0,0,1.6,1.6 }, // for pike
+	{ 0,0,0,0,0,0,0,1.8,1.8 }, // for pike
 	{ 0,0,0,1.1 }, // for swords
 	{}, // for archer
 	{}, // for transporter :: TODO
@@ -49,9 +49,9 @@ double CombatSimulator::damageModifiers[12][12] = {
 	{}, // for ram
 	{} // for catapult
 };
-void CombatSimulator::modifyStats(troopStat* base, researchStats res, heroStat hero, double atk_modifier, double def_modifier, double life_modifier) {
+void CombatSimulator::modifyStats(troopStat* base, researchStats res, heroStat hero, float atk_modifier, float def_modifier, float life_modifier) {
 	for (int i = 0; i < 12; i++) {
-		base[i].defense = max((double)(1000 - ((res.iron_working * 5 + 100)/100)*((100 + hero.intel)/100)*base[i].defense*def_modifier)/1000, 0.5);
+		base[i].defense = max((float)(1000 - ((res.iron_working * 5 + 100)/100)*((100 + hero.intel)/100)*base[i].defense*def_modifier)/1000, 0.5);
 	}
 	for (int i : groundTroopTypes) {
 		base[i].life = base[i].life*(res.medicine * 5 + 100)*life_modifier / 100;
@@ -130,9 +130,9 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 	}
 
 	int8_t atkerType;
-	double atkValue;
+	float atkValue;
 	combatTroops* defenderTroop;
-	double damageModifier;
+	float damageModifier;
 	int8_t inRange;
 	int64_t damage;
 	int64_t damage1;
@@ -321,7 +321,7 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 					damageModifier=damageModifiers[pq->typeId][defenderTroop->typeId];
 					if (damageModifier==0) damageModifier=1;
 					// calculating damage by the attacker
-					double killed=pq->stat->attack*defenderTroop->stat->defense*pq->count*damageModifier / defenderTroop->stat->life;
+					float killed=(damageModifier*pq->count*pq->stat->attack*defenderTroop->stat->defense) / defenderTroop->stat->life;
 #if _DEBUG
 					std::cout << "Attacker troops of type " << pq->typeId << " kills " << (int64_t)killed << " troops of type " << defenderTroop->typeId << "\n";
 #endif
@@ -351,7 +351,7 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 					damageModifier=damageModifiers[pq->typeId][defenderTroop->typeId];
 					if (damageModifier==0) damageModifier=1;
 					// calculating damage by the attacker
-					double killed=pq->stat->attack*(defenderTroop->stat->defense)*pq->count*damageModifier / defenderTroop->stat->life;
+					float killed=(damageModifier*pq->count*pq->stat->attack*defenderTroop->stat->defense) / defenderTroop->stat->life;
 #if _DEBUG
 					std::cout << "Defender troops of type " << pq->typeId << " kills " << (int64_t)killed << " troops of type " << defenderTroop->typeId << "\n";
 #endif
