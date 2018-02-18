@@ -14,7 +14,9 @@ The whole battle consists of rounds and it continues till it reaches 100 rounds 
 
 The battlefield size is calculated using the following formula:-
 
-> field_size=max(200+max(range_of_all_ranged_troops),max(range+speed of all melee troops except cavalry, cataphract))
+```
+field_size=max(200+max(range_of_all_ranged_troops),max(range+speed of all melee troops except cavalry, cataphract))
+```
 
 The defender troops start at position 0, in the battle field and the attacker troops start at the end of the battle field, i.e. at position field_size.
 
