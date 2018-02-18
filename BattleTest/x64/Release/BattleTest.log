@@ -1,5 +1,4 @@
-﻿  stdafx.cpp
-  BattleTest.cpp
+﻿  BattleTest.cpp
 e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(70): warning C4251: 'CombatSimulator::meleeTroopTypes': class 'std::array<int32_t,5>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
   e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(70): note: see declaration of 'std::array<int32_t,5>'
 e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(71): warning C4251: 'CombatSimulator::rangedTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
@@ -12,6 +11,8 @@ e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): warning C
   e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): note: see declaration of 'std::array<int32_t,2>'
      Creating library E:\EvonyAge1BattleCalc\x64\Release\BattleTest.lib and object E:\EvonyAge1BattleCalc\x64\Release\BattleTest.exp
   Generating code
-  All 9 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  1 of 9 functions (11.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   BattleTest.vcxproj -> E:\EvonyAge1BattleCalc\x64\Release\BattleTest.exe

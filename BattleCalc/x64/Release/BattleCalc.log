@@ -1,5 +1,4 @@
-﻿  stdafx.cpp
-  BattleCalc.cpp
+﻿  BattleCalc.cpp
 e:\evonyage1battlecalc\battlecalc\combatsimulator.h(70): warning C4251: 'CombatSimulator::meleeTroopTypes': class 'std::array<int32_t,5>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
   e:\evonyage1battlecalc\battlecalc\combatsimulator.h(70): note: see declaration of 'std::array<int32_t,5>'
 e:\evonyage1battlecalc\battlecalc\combatsimulator.h(71): warning C4251: 'CombatSimulator::rangedTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
@@ -29,9 +28,10 @@ BattleCalc.cpp(386): warning C4244: '=': conversion from 'double' to 'int64_t', 
 BattleCalc.cpp(137): warning C4101: 'damage': unreferenced local variable
 BattleCalc.cpp(132): warning C4101: 'atkerType': unreferenced local variable
 BattleCalc.cpp(138): warning C4101: 'damage1': unreferenced local variable
-  dllmain.cpp
      Creating library E:\EvonyAge1BattleCalc\x64\Release\BattleCalc.lib and object E:\EvonyAge1BattleCalc\x64\Release\BattleCalc.exp
   Generating code
-  All 41 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  3 of 41 functions ( 7.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   BattleCalc.vcxproj -> E:\EvonyAge1BattleCalc\x64\Release\BattleCalc.dll
