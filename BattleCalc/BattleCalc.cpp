@@ -223,12 +223,13 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 				}
 
 				// checking for fastest melee troop if no ranged troop is in range
+				float bestSpeed=-1;
 				if (defenderTroop==NULL) {
 					for (int j : nonRangedTroops) {
 						combatTroops& lp=combatTroopsArrayDef[j];
-						if (lp.count> 0 && lp.location<=maxRange) {
+						if (lp.count> 0 && lp.location<=maxRange && lp.stat->speed>bestSpeed) {
 							defenderTroop=&lp;
-							break;
+							bestSpeed=lp.stat->speed;
 						}
 					}
 				}
@@ -271,12 +272,13 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 				}
 
 				// checking for fastest melee troop if no ranged troop is in range
+				float bestSpeed=-1;
 				if (defenderTroop==NULL) {
 					for (int j : nonRangedTroops) {
 						combatTroops& lp=combatTroopsArrayAtk[j];
-						if (lp.count> 0 && lp.location>=maxRange) {
+						if (lp.count> 0 && lp.location>=maxRange && lp.stat->speed>bestSpeed) {
 							defenderTroop=&lp;
-							break;
+							bestSpeed=lp.stat->speed;
 						}
 					}
 				}
