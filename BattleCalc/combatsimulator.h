@@ -63,6 +63,9 @@ class DLLExport CombatSimulator {
 	public:
 		static troopStat baseStats[12];
 		static troopStat baseFortificationStats[5];
+		static int8_t troopTypes[12];
+		static int32_t movementOrder[12];
+		static int32_t nonRangedTroops[9];
 		static void modifyStats(troopStat* base, researchStats res, heroStat hero, double atk_modifier, double def_modifier, double life_modifier);
 		static std::array<int32_t,5> meleeTroopTypes;
 		static std::array<int32_t,3> rangedTroopTypes;

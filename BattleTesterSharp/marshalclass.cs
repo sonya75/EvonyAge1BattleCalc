@@ -27,6 +27,7 @@ namespace MarshalClass
         [MarshalAs(UnmanagedType.U1)]
         bool ok;
     };
+    [StructLayout(LayoutKind.Sequential)]
     public struct attacker
     {
         researchStats research;
@@ -37,6 +38,7 @@ namespace MarshalClass
         public double defence_modifier;
         public double life_modifier;
     };
+    [StructLayout(LayoutKind.Sequential)]
     public struct defender
     {
         researchStats research;
@@ -52,6 +54,7 @@ namespace MarshalClass
         [MarshalAs(UnmanagedType.U1)]
         bool gateOpen;
     };
+    [StructLayout(LayoutKind.Sequential)]
     public struct battleResult
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
