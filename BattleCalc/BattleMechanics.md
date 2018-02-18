@@ -42,19 +42,27 @@ Here are the rules for target choice:-
 #### Damage Calculation:
 This are the rules for damage calculation:-
 * If the attacking troop is a ranged troop:-
-	> Damage = ceil(attacker_attack * attacker_count * defender_defense_effect * damage_modifier / defender_life_value)
+	```
+	Damage = ceil(attacker_attack * attacker_count * defender_defense_effect * damage_modifier / defender_life_value)
+	```
 	
 	In the above formula ceil means rounding up the number.
 	Defender defense effect is calculated with the formula
-	> defense_effect = (1000-defense_value)/1000
+	```
+	defense_effect = (1000-defense_value)/1000
+	```
 	
 	The damage modifier in this case depends on the distance of the targeted troop from the attacking troop
-	> if (distance <= targeted_troop_range and targeted_troop_is_melee) damage_modifier = 0.25
-	> if (distance > attacker_range/2) damage_modifier=0.5
-	> otherwise damage_modifier=1
+	```
+	if (distance <= targeted_troop_range and targeted_troop_is_melee) damage_modifier = 0.25
+	if (distance > attacker_range/2) damage_modifier=0.5
+	otherwise damage_modifier=1
+	```
 	
 * If the attacking troop is a melee troop, the damage calculation is similar to before, i.e.
-	> Damage = attacker_attack * attacker_count * defender_defense_effect * damage_modifier / defender_life_value
+	```
+	Damage = attacker_attack * attacker_count * defender_defense_effect * damage_modifier / defender_life_value
+	```
 
 	But in this case, the damage modifier is taken from the following table instead(if the value isn't present here, means its 1):-
 	
