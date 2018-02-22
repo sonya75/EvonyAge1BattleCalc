@@ -12,16 +12,16 @@ std::array<int32_t,3> CombatSimulator::mechTroopTypes = { 9,10,11 };
 std::array<int32_t,2> CombatSimulator::mountedTroopTypes = { 7,8 };
 std::array<int32_t,6> CombatSimulator::groundTroopTypes = { 0,1,2,3,4,5 };
 int8_t CombatSimulator::troopTypes[12] = { true,true,true,true,true,false,true,true,true,false,true,false };
-int32_t CombatSimulator::movementOrder[12]= { 7,8,3,4,1,5,9,10,11,0,6,2 };
+int32_t CombatSimulator::movementOrder[12]= { 2,7,8,3,4,1,0,6,10,5,9,11 };
 int32_t CombatSimulator::nonRangedTroops[9]={ 7,8,3,4,1,0,6,2,10 };
 troopStat CombatSimulator::baseStats[12] = {
 	troopStat{ 100,5,50,180,10 }, // worker
 	troopStat{ 200,50,50,200,20 }, // warrior
 	troopStat{ 100,20,50,3000,20 }, // scout
 	troopStat{ 300,150,150,300,50 }, // pike
-	troopStat{ 350,100,250,275,75 }, // swords   75 range instead of 30?
+	troopStat{ 350,100,250,275,30 }, // swords
 	troopStat{ 250,120,50,250,1200 }, // archer
-	troopStat{ }, //transporter :: TODO
+	troopStat{ 700,10,60,150,10 }, //transporter
 	troopStat{ 500,250,180,1000,100 }, // cavalry
 	troopStat{ 1000,350,350,750,80 }, // cataphract
 	troopStat{ 320,450,160,100,1400 }, // ballista
@@ -42,7 +42,7 @@ float CombatSimulator::damageModifiers[12][12] = {
 	{ 0,0,0,0,0,0,0,1.8,1.8 }, // for pike
 	{ 0,0,0,1.1 }, // for swords
 	{}, // for archer
-	{}, // for transporter :: TODO
+	{}, // for transporter
 	{ 0,0,0,0,0,1.2 }, // for cavs
 	{ 0,0,0,0,0,1.2 }, // for cataphracts
 	{}, // for ballista
@@ -100,33 +100,40 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 	combatTroops combatTroopsArrayDef[12];
 	// Calculating field size
 	int field_size=0;
-	for (int i = 0; i < 12; i++) {
-		if (i==7 || i==8) continue;
+/*	for (int i : {}) {
 		if (atk.troops[i]>0 || def.troops[i]>0) {
-			if (troopTypes[i]) field_size=max(field_size,baseStats[i].speed+baseStats[i].range);
-			else field_size=max(field_size,200+baseStats[i].range);
+			field_size=max(field_size,baseStats[i].speed+baseStats[i].range);
 		}
-//		if (atk.troops[i] > 0 || def.troops[i] > 0) field_size = max(field_size, baseStats[i].range + baseStats[i].speed);
+	}*/
+	for (int i : {0, 1, 3, 4, 6, 5, 7, 8, 9, 10, 11}) {
+		if (atk.troops[i] > 0 || def.troops[i] > 0) {
+			field_size = max(field_size, 200 + baseStats[i].range);
+		}
 	}
 
 #if _DEBUG
 	std::cout << "Field size " << field_size << "\n";
 #endif
 	// Creating an array with attacking troops
+    combatTroops* u;
 	for (int i = 0; i < 12; i++) {
-		combatTroopsArrayAtk[i].count = atk.troops[i];
-		combatTroopsArrayAtk[i].location = 0;
-		combatTroopsArrayAtk[i].typeId = i;
-		combatTroopsArrayAtk[i].stat = &attackerTroopStats[i];
-		combatTroopsArrayAtk[i].isAttacker = true;
+        u=&combatTroopsArrayAtk[i];
+		u->count = atk.troops[i];
+		u->location = 0;
+		u->typeId = i;
+		u->stat = &attackerTroopStats[i];
+		u->isAttacker = true;
+        u->effectiveTroops=atk.troops[i];
 	}
 
 	// Creating an array with defending troops
 	for (int i = 0; i < 12; i++) {
-		combatTroopsArrayDef[i].count = def.troops[i];
-		combatTroopsArrayDef[i].location = field_size;
-		combatTroopsArrayDef[i].typeId = i;
-		combatTroopsArrayDef[i].stat = &defenderTroopStats[i];
+        u=&combatTroopsArrayDef[i];
+		u->count = def.troops[i];
+		u->location = field_size;
+		u->typeId = i;
+		u->stat = &defenderTroopStats[i];
+        u->effectiveTroops=def.troops[i];
 	}
 
 	int8_t atkerType;
@@ -147,7 +154,7 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 			combatTroops* pq = &combatTroopsArrayDef[i];
 
 			// first moving the defender troop of that type
-			if (pq->count > 0) {
+			if (i!=2 && i!=6 && pq->count > 0) {
 				int32_t nearestPosition = 0;
 				inRange=false;
 				maxRange = pq->location - pq->stat->range;
@@ -164,14 +171,24 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 
 				// if no troop is in range, move
 				if (!inRange) {
-					if (troopTypes[i]) pq->location=max(nearestPosition,pq->location-pq->stat->speed);
-					else pq->location = max(min(pq->location,nearestPosition+pq->stat->range),pq->location-pq->stat->speed);
+					pq->location=max(nearestPosition,pq->location-pq->stat->speed);
+//					else pq->location = max(min(pq->location,nearestPosition+pq->stat->range),pq->location-pq->stat->speed);
 #if _DEBUG
 					std::cout << "Defender troops of type " << pq->typeId << " moves to " << pq->location << "\n";
 #endif
 				}
 			}
 			
+            if (i==2 || i==6) {
+                bool scoutOnly=true;
+                for (int i: {0,1,3,4,5,7,8,9,10,11}) {
+                    if (combatTroopsArrayAtk[i].count>0) {
+                        scoutOnly=false;
+                        break;
+                    }
+                }
+                if (!scoutOnly) continue;
+            }
 			pq = &combatTroopsArrayAtk[i];
 
 			// next moving the attacker troop of that type
@@ -192,8 +209,8 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 
 				// if no troop is in range, move
 				if (!inRange) {
-					if (troopTypes[i]) pq->location=min(nearestPosition,pq->location+pq->stat->speed);
-					else pq->location = min(max(pq->location,nearestPosition-pq->stat->range),pq->location+pq->stat->speed);
+					pq->location=min(nearestPosition,pq->location+pq->stat->speed);
+//					else pq->location = min(max(pq->location,nearestPosition-pq->stat->range),pq->location+pq->stat->speed);
 #if _DEBUG
 					std::cout << "Attacker troops of type " << pq->typeId << " moves to " << pq->location << "\n";
 #endif
@@ -201,165 +218,168 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 			}
 		}
 
-		// first perform attacks from the ranged troops
-		for (int i : rangedTroopTypes) {
-			combatTroops* pq=&combatTroopsArrayAtk[i];
+		// perform attacks according to the movement order
+		for (int i : { 2, 7, 8, 3, 4, 5, 1, 0, 6, 10, 9, 11 }) {
+
+            // first defender troop of that type attacks
+
+			combatTroops* pq=&combatTroopsArrayDef[i];
+            if (pq->count > 0) {
+
+                // choose which troop to attack
+                defenderTroop=nullptr;
+                atkValue=0;
+                maxRange=pq->location - pq->stat->range;
+                int32_t mindistance=-1;
+                if (troopTypes[i]) {
+                    for (combatTroops& lp:combatTroopsArrayAtk) {
+                        if (lp.effectiveTroops> 0 && lp.location>=maxRange) {
+                            if (mindistance==-1||mindistance>(pq->location-lp.location)||(mindistance==(pq->location-lp.location)&&(lp.stat->attack*lp.effectiveTroops>atkValue))) {
+                                defenderTroop=&lp;
+                                atkValue=lp.stat->attack*lp.effectiveTroops;
+                                mindistance=pq->location-lp.location;
+                            }
+                        }
+                    }
+                }
+                else {
+                    // checking if there is a ranged troop in range
+                    for (int j : rangedTroopTypes) {
+                        combatTroops& lp=combatTroopsArrayAtk[j];
+                        if (lp.effectiveTroops>0) {
+                            if (lp.location >= maxRange) {
+                                if ((lp.stat->attack*lp.effectiveTroops)>atkValue) {
+                                    atkValue=lp.stat->attack*lp.effectiveTroops;
+                                    defenderTroop=&lp;
+                                }
+                            }
+                        }
+                    }
+
+                    // checking for fastest melee troop if no ranged troop is in range
+                    float bestSpeed=-1;
+                    if (defenderTroop==nullptr) {
+                        for (int j : nonRangedTroops) {
+                            combatTroops& lp=combatTroopsArrayAtk[j];
+                            if (lp.effectiveTroops> 0 && lp.location>=maxRange && lp.stat->speed>bestSpeed) {
+                                defenderTroop=&lp;
+                                bestSpeed=lp.stat->speed;
+                            }
+                        }
+                    }
+                }
+
+                // attack if there is a troop to attack
+                if (defenderTroop!=nullptr) {
+                    int64_t killed = 0;
+                    if (troopTypes[i]) {
+                        damageModifier=damageModifiers[pq->typeId][defenderTroop->typeId];
+                        if (damageModifier==0) damageModifier=1;
+                        // calculating damage by the attacker
+#if _DEBUG
+                        std::cout << "floor " << damageModifier << "*" << pq->count << "*" << pq->stat->attack << "*" << defenderTroop->stat->defense << "/" << defenderTroop->stat->life << "\n";
+#endif
+                        killed=(float)(damageModifier*pq->count*pq->stat->attack*defenderTroop->stat->defense) / defenderTroop->stat->life;
+                    }
+                    else {
+                        int64_t distance=pq->location-defenderTroop->location;
+                        if (distance <= defenderTroop->stat->range && troopTypes[defenderTroop->typeId]) damageModifier=0.25;
+                        else if (distance > ((pq->stat->range)/2)) damageModifier=0.5;
+                        else damageModifier=1;
+#if _DEBUG                        
+                        std::cout << "ceil " << pq->stat->attack << "*" << defenderTroop->stat->defense << "*" << pq->count << "*" << damageModifier << "/" << defenderTroop->stat->life << "\n";
+#endif                        
+                        killed=ceil(pq->stat->attack*defenderTroop->stat->defense*pq->count*damageModifier / defenderTroop->stat->life);
+                    }
+#if _DEBUG
+                    std::cout << "Defender troops of type " << pq->typeId << " kills " << killed << " troops of type " << defenderTroop->typeId << "\n";
+#endif
+                    if (killed>defenderTroop->effectiveTroops) defenderTroop->effectiveTroops=0;
+                    else defenderTroop->effectiveTroops-=killed;
+                }
+            }
+
+            // now doing the same for attacker troop of that type
+			pq=&combatTroopsArrayAtk[i];
 			if (pq->count>0) {
 				// choose which troop to attack
-				defenderTroop=NULL;
+				defenderTroop=nullptr;
 				atkValue=0;
 				maxRange=pq->location + pq->stat->range;
-				// checking if there is a ranged troop in range
-				for (int j : rangedTroopTypes) {
-					combatTroops& lp=combatTroopsArrayDef[j];
-					if (lp.count>0) {
-						if (lp.location <= maxRange) {
-							if ((lp.stat->attack*lp.count)>atkValue) {
-								atkValue=lp.stat->attack*lp.count;
-								defenderTroop=&lp;
-							}
-						}
-					}
-				}
+                int32_t mindistance=-1;
 
-				// checking for fastest melee troop if no ranged troop is in range
-				float bestSpeed=-1;
-				if (defenderTroop==NULL) {
-					for (int j : nonRangedTroops) {
-						combatTroops& lp=combatTroopsArrayDef[j];
-						if (lp.count> 0 && lp.location<=maxRange && lp.stat->speed>bestSpeed) {
-							defenderTroop=&lp;
-							bestSpeed=lp.stat->speed;
-						}
-					}
-				}
+                // if attacker is a melee troop
+                if (troopTypes[i]) {
+                    for (int j=0;j<12;j++) {
+                        combatTroops& lp=combatTroopsArrayDef[j];
+                        if (lp.effectiveTroops> 0 && lp.location<=maxRange) {
+                            if (mindistance==-1||mindistance>(lp.location-pq->location)||(mindistance==(lp.location-pq->location)&&(lp.stat->attack*lp.effectiveTroops>atkValue))) {
+                                defenderTroop=&lp;
+                                atkValue=lp.stat->attack*lp.effectiveTroops;
+                                mindistance=lp.location-pq->location;
+                            }
+                        }
+                    }
+                }
+                // if attacker is a ranged troop
+                else {
+                    // checking if there is a ranged troop in range
+                    for (int j : rangedTroopTypes) {
+                        combatTroops& lp=combatTroopsArrayDef[j];
+                        if (lp.effectiveTroops>0) {
+                            if (lp.location <= maxRange) {
+                                if ((lp.stat->attack*lp.effectiveTroops)>atkValue) {
+                                    atkValue=lp.stat->attack*lp.effectiveTroops;
+                                    defenderTroop=&lp;
+                                }
+                            }
+                        }
+                    }
+
+                    // checking for fastest melee troop if no ranged troop is in range
+                    float bestSpeed=-1;
+                    if (defenderTroop==nullptr) {
+                        for (int j : nonRangedTroops) {
+                            combatTroops& lp=combatTroopsArrayDef[j];
+                            if (lp.effectiveTroops> 0 && lp.location<=maxRange && lp.stat->speed>bestSpeed) {
+                                defenderTroop=&lp;
+                                bestSpeed=lp.stat->speed;
+                            }
+                        }
+                    }
+                }
 
 				// attack if there is a troop to attack
-				if (defenderTroop!=NULL) {
-					int64_t distance=defenderTroop->location-pq->location;
-					if (distance <= defenderTroop->stat->range && troopTypes[defenderTroop->typeId]) damageModifier=0.25;
-					else if (distance > ((pq->stat->range)/2) ) damageModifier=0.5;
-					else damageModifier=1;
-					// calculating damage by the attacker
-					int64_t killed=ceil(pq->stat->attack*defenderTroop->stat->defense*pq->count*damageModifier / defenderTroop->stat->life);
+				if (defenderTroop!=nullptr) {
+					int64_t killed=0;
+                    if (troopTypes[i]) {
+                        damageModifier=damageModifiers[pq->typeId][defenderTroop->typeId];
+                        if (damageModifier==0) damageModifier=1;
+                        // calculating damage by the attacker
+#if _DEBUG
+                        std::cout << "floor " << damageModifier << "*" << pq->count << "*" << pq->stat->attack << "*" << defenderTroop->stat->defense << "/" << defenderTroop->stat->life << "\n";
+#endif
+                        killed=(float)(damageModifier*pq->count*pq->stat->attack*defenderTroop->stat->defense) / defenderTroop->stat->life;
+                    }
+                    else {
+                        int64_t distance=defenderTroop->location-pq->location;
+                        if (distance <= defenderTroop->stat->range && troopTypes[defenderTroop->typeId]) damageModifier=0.25;
+                        else if (distance > ((pq->stat->range)/2) ) damageModifier=0.5;
+                        else damageModifier=1;
+#if _DEBUG
+                        std::cout << "ceil " << pq->stat->attack << "*" << defenderTroop->stat->defense << "*" << pq->count << "*" << damageModifier << "/" << defenderTroop->stat->life << "\n";
+#endif
+                        killed=ceil(pq->stat->attack*defenderTroop->stat->defense*pq->count*damageModifier / defenderTroop->stat->life);
+                    }
 #if _DEBUG
 					std::cout << "Attacker troops of type " << pq->typeId << " kills " << killed << " troops of type " << defenderTroop->typeId << "\n";
 #endif
-					defenderTroop->damage += killed;
+					if (killed>defenderTroop->effectiveTroops) defenderTroop->effectiveTroops=0;
+                    else defenderTroop->effectiveTroops-=killed;
 				}
 			}
 
-			// now doing the same for defender ranged troop of that type
 
-			pq=&combatTroopsArrayDef[i];
-			if (pq->count > 0) {
-
-				// choose which troop to attack
-				defenderTroop=NULL;
-				atkValue=0;
-				maxRange=pq->location - pq->stat->range;
-				// checking if there is a ranged troop in range
-				for (int j : rangedTroopTypes) {
-					combatTroops& lp=combatTroopsArrayAtk[j];
-					if (lp.count>0) {
-						if (lp.location >= maxRange) {
-							if ((lp.stat->attack*lp.count)>atkValue) {
-								atkValue=lp.stat->attack*lp.count;
-								defenderTroop=&lp;
-							}
-						}
-					}
-				}
-
-				// checking for fastest melee troop if no ranged troop is in range
-				float bestSpeed=-1;
-				if (defenderTroop==NULL) {
-					for (int j : nonRangedTroops) {
-						combatTroops& lp=combatTroopsArrayAtk[j];
-						if (lp.count> 0 && lp.location>=maxRange && lp.stat->speed>bestSpeed) {
-							defenderTroop=&lp;
-							bestSpeed=lp.stat->speed;
-						}
-					}
-				}
-
-				// attack if there is a troop to attack
-				if (defenderTroop!=NULL) {
-					int64_t distance=pq->location-defenderTroop->location;
-					if (distance <= defenderTroop->stat->range && troopTypes[defenderTroop->typeId]) damageModifier=0.25;
-					else if (distance > ((pq->stat->range)/2)) damageModifier=0.5;
-					else damageModifier=1;
-					// calculating damage by the attacker
-					int64_t killed=ceil(pq->stat->attack*defenderTroop->stat->defense*pq->count*damageModifier / defenderTroop->stat->life);
-#if _DEBUG
-					std::cout << "Defender troops of type " << pq->typeId << " kills " << killed << " troops of type " << defenderTroop->typeId << "\n";
-#endif
-					defenderTroop->damage += killed;
-				}
-			}
-		}
-
-		// next perform attacks from the non-ranged troops
-		for (int i : nonRangedTroops) {
-			combatTroops* pq=&combatTroopsArrayAtk[i];
-			if (pq->count > 0) {
-
-				// choose which troop to attack
-				defenderTroop=NULL;
-				atkValue=0;
-				maxRange=pq->location + pq->stat->range;
-
-				// chossing the troop with highest attack value
-				for (int j=0;j<12;j++) {
-					combatTroops& lp=combatTroopsArrayDef[j];
-					if (lp.count> 0 && lp.location<=maxRange && (lp.stat->attack*lp.count)>atkValue) {
-						defenderTroop=&lp;
-						atkValue=lp.stat->attack*lp.count;
-					}
-				}
-
-				// attack if there is a troop to attack
-				if (defenderTroop!=NULL) {
-					damageModifier=damageModifiers[pq->typeId][defenderTroop->typeId];
-					if (damageModifier==0) damageModifier=1;
-					// calculating damage by the attacker
-					float killed=(damageModifier*pq->count*pq->stat->attack*defenderTroop->stat->defense) / defenderTroop->stat->life;
-#if _DEBUG
-					std::cout << "Attacker troops of type " << pq->typeId << " kills " << (int64_t)killed << " troops of type " << defenderTroop->typeId << "\n";
-#endif
-					defenderTroop->damage += killed;
-				}
-			}
-
-			// now doing the same for defender non-ranged troop of that type
-			pq=&combatTroopsArrayDef[i];
-
-			if (pq->count > 0) {
-				// choose which troop to attack
-				defenderTroop=NULL;
-				atkValue=0;
-				maxRange=pq->location - pq->stat->range;
-
-				// chossing the troop with highest attack value
-				for (combatTroops& lp:combatTroopsArrayAtk) {
-					if (lp.count> 0 && lp.location>=maxRange && (lp.stat->attack*lp.count)>atkValue) {
-						defenderTroop=&lp;
-						atkValue=lp.stat->attack*lp.count;
-					}
-				}
-
-				// attack if there is a troop to attack
-				if (defenderTroop!=NULL) {
-					damageModifier=damageModifiers[pq->typeId][defenderTroop->typeId];
-					if (damageModifier==0) damageModifier=1;
-					// calculating damage by the attacker
-					float killed=(damageModifier*pq->count*pq->stat->attack*defenderTroop->stat->defense) / defenderTroop->stat->life;
-#if _DEBUG
-					std::cout << "Defender troops of type " << pq->typeId << " kills " << (int64_t)killed << " troops of type " << defenderTroop->typeId << "\n";
-#endif
-					defenderTroop->damage += killed;
-				}
-			}
 		}
 
 
@@ -371,28 +391,22 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 		attackerAlive = false;
 		defenderAlive = false;
 		for (combatTroops& xp:combatTroopsArrayAtk) {
-			if (xp.count>0) {
-				if (xp.damage>0) {
-					xp.count=max(0,xp.count-floor(xp.damage));
-#if _DEBUG					
-					std::cout << "Attacker troops of type " << xp.typeId << " killed total " << floor(xp.damage) << "\n";
-#endif					
-					xp.damage=0;
-				}
-				if (xp.count>0) attackerAlive=true;
-			}
+#if _DEBUG
+			if (xp.effectiveTroops<xp.count) {
+				std::cout << "Attacker troops of type " << xp.typeId << " killed total " << floor(xp.count-xp.effectiveTroops) << "\n";
+            }
+#endif
+            xp.count=xp.effectiveTroops;
+			if (xp.count>0) attackerAlive=true;
 		}
 		for (combatTroops& xp:combatTroopsArrayDef) {
-			if (xp.count>0) {
-				if (xp.damage>0) {
-					xp.count=max(0,xp.count-floor(xp.damage));
-#if _DEBUG					
-					std::cout << "Defender troops of type " << xp.typeId << " killed total " << floor(xp.damage) << "\n";
-#endif					
-					xp.damage=0;
-				}
-				if (xp.count>0) defenderAlive=true;
-			}
+#if _DEBUG
+            if (xp.effectiveTroops<xp.count) {
+                std::cout << "Defender troops of type " << xp.typeId << " killed total " << floor(xp.count-xp.effectiveTroops) << "\n";
+            }
+#endif
+            xp.count=xp.effectiveTroops;
+            if (xp.count>0) defenderAlive=true;
 		}
 #if _DEBUG
 		std::cout << "==== ROUND " << round << " END ==== \n";

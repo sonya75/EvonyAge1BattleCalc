@@ -49,7 +49,7 @@ struct combatTroops {
 	int32_t typeId;
 	int64_t count = 0;
 	troopStat* stat;
-	float damage = 0;
+	int64_t effectiveTroops;
 	int8_t isAttacker = false;
 };
 struct battleResult {

@@ -11,8 +11,8 @@ e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): warning C
   e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): note: see declaration of 'std::array<int32_t,2>'
      Creating library E:\EvonyAge1BattleCalc\x64\Release\BattleTest.lib and object E:\EvonyAge1BattleCalc\x64\Release\BattleTest.exp
   Generating code
-  5 of 9 functions (55.6%) were compiled, the rest were copied from previous compilation.
+  6 of 261 functions ( 2.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   BattleTest.vcxproj -> E:\EvonyAge1BattleCalc\x64\Release\BattleTest.exe

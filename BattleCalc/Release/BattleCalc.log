@@ -1,0 +1,38 @@
+﻿  stdafx.cpp
+  BattleCalc.cpp
+e:\evonyage1battlecalc\battlecalc\combatsimulator.h(70): warning C4251: 'CombatSimulator::meleeTroopTypes': class 'std::array<int32_t,5>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battlecalc\combatsimulator.h(70): note: see declaration of 'std::array<int32_t,5>'
+e:\evonyage1battlecalc\battlecalc\combatsimulator.h(71): warning C4251: 'CombatSimulator::rangedTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battlecalc\combatsimulator.h(71): note: see declaration of 'std::array<int32_t,3>'
+e:\evonyage1battlecalc\battlecalc\combatsimulator.h(72): warning C4251: 'CombatSimulator::mechTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battlecalc\combatsimulator.h(71): note: see declaration of 'std::array<int32_t,3>'
+e:\evonyage1battlecalc\battlecalc\combatsimulator.h(73): warning C4251: 'CombatSimulator::groundTroopTypes': class 'std::array<int32_t,6>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battlecalc\combatsimulator.h(73): note: see declaration of 'std::array<int32_t,6>'
+e:\evonyage1battlecalc\battlecalc\combatsimulator.h(74): warning C4251: 'CombatSimulator::mountedTroopTypes': class 'std::array<int32_t,2>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battlecalc\combatsimulator.h(74): note: see declaration of 'std::array<int32_t,2>'
+BattleCalc.cpp(51): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+BattleCalc.cpp(51): warning C4305: 'initializing': truncation from 'double' to 'float'
+BattleCalc.cpp(54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+BattleCalc.cpp(97): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+BattleCalc.cpp(98): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+BattleCalc.cpp(105): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+BattleCalc.cpp(106): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+BattleCalc.cpp(157): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+BattleCalc.cpp(171): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+BattleCalc.cpp(195): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+BattleCalc.cpp(209): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+BattleCalc.cpp(229): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+BattleCalc.cpp(279): warning C4244: '=': conversion from 'float' to 'int64_t', possible loss of data
+BattleCalc.cpp(289): warning C4244: '=': conversion from 'float' to 'int64_t', possible loss of data
+BattleCalc.cpp(305): warning C4244: '=': conversion from 'float' to 'int32_t', possible loss of data
+BattleCalc.cpp(359): warning C4244: '=': conversion from 'float' to 'int64_t', possible loss of data
+BattleCalc.cpp(369): warning C4244: '=': conversion from 'float' to 'int64_t', possible loss of data
+BattleCalc.cpp(141): warning C4101: 'damage': unreferenced local variable
+BattleCalc.cpp(136): warning C4101: 'atkerType': unreferenced local variable
+BattleCalc.cpp(142): warning C4101: 'damage1': unreferenced local variable
+  dllmain.cpp
+     Creating library E:\EvonyAge1BattleCalc\Release\BattleCalc.lib and object E:\EvonyAge1BattleCalc\Release\BattleCalc.exp
+  Generating code
+  All 48 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  BattleCalc.vcxproj -> E:\EvonyAge1BattleCalc\Release\BattleCalc.dll
