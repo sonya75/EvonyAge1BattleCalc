@@ -5,6 +5,7 @@
 #include "combatsimulator.h"
 #include <array>
 #include <iostream>
+#include <stdlib.h>
 
 std::array<int32_t,5> CombatSimulator::meleeTroopTypes = { 0,1,2,3,4 };
 std::array<int32_t,3> CombatSimulator::rangedTroopTypes = { 5,9,11 };
@@ -29,25 +30,25 @@ troopStat CombatSimulator::baseStats[12] = {
 	troopStat{ 480,600,200,80,1500 } // catapult
 };
 troopStat CombatSimulator::baseFortificationStats[5] = {
-	troopStat{}, // trap :: TODO
-	troopStat{}, // abatis :: TODO
+	troopStat{ 0,0,0,0,5000 }, // trap
+	troopStat{ 0,0,0,0,5000 }, // abatis
 	troopStat{ 2000,300,360,0,1300 }, // archer tower
-	troopStat{}, // rolling logs :: TODO
-	troopStat{} // trebuchet :: TODO
+	troopStat{ 0,500,0,0,1300 }, // rolling logs
+	troopStat{ 0,800,0,0,5000 } // trebuchet
 };
-float CombatSimulator::damageModifiers[12][12] = {
-	{}, // modifiers for worker attacking other troops
-	{}, // for warrior
-	{}, // for scout
-	{ 0,0,0,0,0,0,0,1.8,1.8 }, // for pike
-	{ 0,0,0,1.1 }, // for swords
-	{}, // for archer
-	{}, // for transporter
-	{ 0,0,0,0,0,1.2 }, // for cavs
-	{ 0,0,0,0,0,1.2 }, // for cataphracts
-	{}, // for ballista
-	{}, // for ram
-	{} // for catapult
+float CombatSimulator::damageModifiers[12][17] = {
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 }, // modifiers for worker attacking other troops
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 }, // for warrior
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 }, // for scout
+	{ 0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0.3 }, // for pike
+	{ 0,0,0,1.1,0,0,0,0,0,0,0,0,0,0,0.3 }, // for swords
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 }, // for archer
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 }, // for transporter
+	{ 0,0,0,0,0,1.2,0,0,0,0,0,0,0,0,0.3 }, // for cavs
+	{ 0,0,0,0,0,1.2,0,0,0,0,0,0,0,0,0.3 }, // for cataphracts
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 }, // for ballista
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 }, // for ram
+	{ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0.3 } // for catapult
 };
 void CombatSimulator::modifyStats(troopStat* base, researchStats res, heroStat hero, float atk_modifier, float def_modifier, float life_modifier) {
 	for (int i = 0; i < 12; i++) {
@@ -98,6 +99,7 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 	defenderFortificationStats[2].range = defenderFortificationStats[2].range*(def.research.archery * 5 + def.wallLevel*4.5 + 100) / 100;
 	combatTroops combatTroopsArrayAtk[12];
 	combatTroops combatTroopsArrayDef[12];
+	int64_t wallhitpoints = 50000 * def.wallLevel*(def.wallLevel + 1);
 	// Calculating field size
 	int field_size=0;
 /*	for (int i : {}) {
@@ -110,7 +112,9 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 			field_size = max(field_size, 200 + baseStats[i].range);
 		}
 	}
-
+	for (int i = 0; i < 5; i++) {
+		if (def.fortifications[i] > 0) field_size = max(field_size, 200 + baseFortificationStats[i].range);
+	}
 #if _DEBUG
 	std::cout << "Field size " << field_size << "\n";
 #endif
@@ -135,6 +139,25 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 		u->stat = &defenderTroopStats[i];
         u->effectiveTroops=def.troops[i];
 	}
+
+	combatTroops archerTower;
+	archerTower.count = def.fortifications[2];
+	archerTower.stat = &defenderFortificationStats[2];
+	archerTower.effectiveTroops = def.fortifications[2];
+	archerTower.typeId = 14;
+
+	int64_t trapCount = def.fortifications[0];
+	int64_t abatisCount = def.fortifications[1];
+	int64_t rollingLogCount = def.fortifications[3];
+	int64_t rockCount = def.fortifications[4];
+
+	int64_t trapDieRate = 0;
+	if (trapCount > 0) {
+		trapDieRate = trapCount * (5 + rand() % 5) / 100;
+	}
+	int64_t abatisDieRate = abatisCount / 10;
+	int64_t logDieRate = rollingLogCount / 10;
+	int64_t maxRockDieRate = rockCount / 10;
 
 	int8_t atkerType;
 	float atkValue;
@@ -320,6 +343,15 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
                             }
                         }
                     }
+					// checking if the archer towers are in range
+					if (defenderTroop == nullptr) {
+						// checking if the archer towers are in range
+						if (archerTower.effectiveTroops > 0 && field_size <= maxRange) {
+							if ((archerTower.stat->attack*archerTower.effectiveTroops) > atkValue) {
+								defenderTroop = &archerTower;
+							}
+						}
+					}
                 }
                 // if attacker is a ranged troop
                 else {
@@ -336,6 +368,12 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
                         }
                     }
 
+					// checking if the archer towers are in range
+					if (archerTower.effectiveTroops > 0 && field_size <= maxRange) {
+						if ((archerTower.stat->attack*archerTower.effectiveTroops) > atkValue) {
+							defenderTroop = &archerTower;
+						}
+					}
                     // checking for fastest melee troop if no ranged troop is in range
                     float bestSpeed=-1;
                     if (defenderTroop==nullptr) {
@@ -377,12 +415,144 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 					if (killed>defenderTroop->effectiveTroops) defenderTroop->effectiveTroops=0;
                     else defenderTroop->effectiveTroops-=killed;
 				}
+				// attack wall if no troop is in range
+				else if (wallhitpoints > 0 && maxRange >= field_size) {
+					wallhitpoints = max(wallhitpoints - floor(pq->count*pq->stat->attack), 0);
+				}
 			}
-
-
 		}
 
+		// now attack using traps
+		if (trapCount > 0) {
+			int totalTroops = 0;
+			int pos = field_size - 5000;
+			for (combatTroops& lp : combatTroopsArrayAtk) {
+				if (lp.effectiveTroops > 0 && lp.location >= pos && lp.location<field_size) totalTroops++;
+			}
+			if (totalTroops > 0) {
+				int maxTraps = min(trapCount, trapDieRate);
+				int kills = (float)(maxTraps*0.5*def.trapKillPower) / totalTroops;
+				for (combatTroops& lp : combatTroopsArrayAtk) {
+					if (lp.effectiveTroops > 0 && lp.location >= pos && lp.location<field_size) {
+						lp.effectiveTroops -= kills;
+						if (lp.effectiveTroops < 0) lp.effectiveTroops = 0;
+					}
+				}
+				trapCount -= maxTraps;
+			}
+		}
 
+		// now attack using abatis
+		if (abatisCount > 0) {
+			// if there are cavs attack them
+			int pos = field_size - 5000;
+			combatTroops* lp;
+			if ((lp=&combatTroopsArrayAtk[7])->effectiveTroops > 0 && lp->location>=pos && lp->location<field_size) {
+				int64_t maxAbatisKill = min(abatisCount, abatisDieRate);
+				int64_t kills = maxAbatisKill * 0.535;
+				lp->effectiveTroops = max(lp->effectiveTroops - kills, 0);
+			}
+			// attack phracts if no cav is there
+			else if ((lp=&combatTroopsArrayAtk[8])->effectiveTroops > 0 && lp->location>=pos && lp->location<field_size) {
+				int64_t maxAbatisKill = min(abatisCount, abatisDieRate);
+				int64_t kills = maxAbatisKill * 0.535;
+				lp->effectiveTroops = max(lp->effectiveTroops - kills, 0);
+			}
+		}
+
+		// now attack using rolling logs
+		if (rollingLogCount > 0) {
+			int pos = field_size - defenderFortificationStats[3].range;
+			float maxAtkValue = 0;
+			combatTroops* defenderTroop = nullptr;
+			combatTroops* lp;
+			// choose which troop to attack
+			for (int i : {0, 1, 2, 3, 4, 5}) {
+				if ((lp = &combatTroopsArrayAtk[i])->effectiveTroops > 0 && lp->location >=pos && lp->location < field_size && (lp->effectiveTroops*lp->stat->attack > maxAtkValue)) {
+					defenderTroop = &combatTroopsArrayAtk[i];
+					maxAtkValue = lp->effectiveTroops*lp->stat->attack;
+				}
+			}
+			if (defenderTroop != nullptr) {
+				int64_t maxLogKill = min(rollingLogCount, logDieRate);
+				defenderTroop->effectiveTroops = max(defenderTroop->effectiveTroops - floor(maxLogKill*def.logKillPower*defenderFortificationStats[3].attack*defenderTroop->stat->defense), 0);
+				rollingLogCount -= maxLogKill;
+			}
+		}
+
+		// now attack using trebs
+		if (rockCount > 0) {
+			int pos = field_size - defenderFortificationStats[4].range;
+			float maxAtkValue = 0;
+			combatTroops* defenderTroop = nullptr;
+			combatTroops* lp;
+			// choose which troop to attack
+			for (int i = 0; i < 12; i++) {
+				if ((lp = &combatTroopsArrayAtk[i])->effectiveTroops > 0 && lp->location >= pos && lp->location < field_size && (lp->effectiveTroops*lp->stat->attack > maxAtkValue)) {
+					defenderTroop = &combatTroopsArrayAtk[i];
+					maxAtkValue = lp->effectiveTroops*lp->stat->attack;
+				}
+			}
+			if (defenderTroop != nullptr) {
+				double totalDefValue = defenderTroop->effectiveTroops * defenderTroop->stat->life*defenderTroop->stat->defense;
+				double totalAtkValue = maxRockDieRate*def.rockKillPower*defenderFortificationStats[4].attack;
+				if (totalDefValue > totalAtkValue) {
+					rockCount -= maxRockDieRate;
+					defenderTroop->effectiveTroops = max(defenderTroop->effectiveTroops - floor((float)(maxRockDieRate*defenderFortificationStats[4].attack*def.rockKillPower) / (float)(defenderTroop->stat->defense*defenderTroop->stat->life)), 0);
+				}
+				else {
+					rockCount -= ceil((float)(defenderTroop->stat->defense*defenderTroop->stat->life*defenderTroop->effectiveTroops) / (float)(def.rockKillPower*defenderFortificationStats[4].attack));
+					if (rockCount < 0) rockCount = 0;
+				}
+			}
+		}
+
+		// now attack using archer towers
+		archerTower.count = archerTower.effectiveTroops;
+		if (archerTower.count > 0) {
+			// checking if there is a ranged troop in range
+			defenderTroop = nullptr;
+			atkValue = 0;
+			maxRange = field_size - archerTower.stat->range;
+			for (int j : rangedTroopTypes) {
+				combatTroops& lp = combatTroopsArrayAtk[j];
+				if (lp.effectiveTroops>0) {
+					if (lp.location >= maxRange) {
+						if ((lp.stat->attack*lp.effectiveTroops)>atkValue) {
+							atkValue = lp.stat->attack*lp.effectiveTroops;
+							defenderTroop = &lp;
+						}
+					}
+				}
+			}
+
+			// checking for fastest melee troop if no ranged troop is in range
+			float bestSpeed = -1;
+			if (defenderTroop == nullptr) {
+				for (int j : nonRangedTroops) {
+					combatTroops& lp = combatTroopsArrayAtk[j];
+					if (lp.effectiveTroops> 0 && lp.location >= maxRange && lp.stat->speed>bestSpeed) {
+						defenderTroop = &lp;
+						bestSpeed = lp.stat->speed;
+					}
+				}
+			}
+			if (defenderTroop != nullptr) {
+				int64_t killed;
+				int64_t distance = field_size - defenderTroop->location;
+				if (distance > ((archerTower.stat->range) / 2)) damageModifier = 0.5;
+				else damageModifier = 1;
+#if _DEBUG                        
+				std::cout << "ceil " << archerTower.stat->attack << "*" << defenderTroop->stat->defense << "*" << archerTower.count << "*" << damageModifier << "/" << defenderTroop->stat->life << "\n";
+#endif                        
+				killed = (float) archerTower.stat->attack*archerTower.count*damageModifier / (float)(defenderTroop->stat->defense * defenderTroop->stat->life);
+#if _DEBUG
+				std::cout << "Defender archer towers kills " << killed << " troops of type " << defenderTroop->typeId << "\n";
+#endif
+				if (killed > defenderTroop->effectiveTroops) defenderTroop->effectiveTroops = 0;
+				else defenderTroop->effectiveTroops -= killed;
+			}
+		}
 #if _DEBUG
 		std::cout << "==== Round finished ====\n";
 #endif
@@ -408,6 +578,7 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
             xp.count=xp.effectiveTroops;
             if (xp.count>0) defenderAlive=true;
 		}
+		if (wallhitpoints > 0) defenderAlive = true;
 #if _DEBUG
 		std::cout << "==== ROUND " << round << " END ==== \n";
 #endif
@@ -421,6 +592,11 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 	for (combatTroops& uh : combatTroopsArrayDef) {
 		br->defenderTroops[uh.typeId] = uh.count;
 	}
+	br->fortification[0] = trapCount;
+	br->fortification[1] = abatisCount;
+	br->fortification[2] = archerTower.count;
+	br->fortification[3] = rollingLogCount;
+	br->fortification[4] = rockCount;
 	br->result = attackerAlive | (defenderAlive << 1);
 	br->totalRounds = min(round + 1,100);
 #if _DEBUG
@@ -435,5 +611,11 @@ void CombatSimulator::fight(attacker atk, defender def,battleResult* br) {
 			std::cout << "Defender troop of type " << hu.typeId << " count " << hu.count << "\n";
 		}
 	}
+	if (trapCount > 0) std::cout << "Traps survived " << trapCount << "\n";
+	if (abatisCount > 0) std::cout << "Abatis survived " << abatisCount << "\n";
+	if (archerTower.count > 0) std::cout << "Archer towers survived " << archerTower.count << "\n";
+	if (rollingLogCount > 0) std::cout << "Rolling logs survived " << rollingLogCount << "\n";
+	if (rockCount > 0) std::cout << "Trebuchets survived " << rockCount << "\n";
+	if (wallhitpoints > 0) std::cout << "Wall hitpoints left " << wallhitpoints << "\n";
 #endif
 }

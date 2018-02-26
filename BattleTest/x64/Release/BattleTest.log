@@ -1,18 +1,18 @@
 ﻿  BattleTest.cpp
-e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(70): warning C4251: 'CombatSimulator::meleeTroopTypes': class 'std::array<int32_t,5>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
-  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(70): note: see declaration of 'std::array<int32_t,5>'
-e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(71): warning C4251: 'CombatSimulator::rangedTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
-  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(71): note: see declaration of 'std::array<int32_t,3>'
-e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(72): warning C4251: 'CombatSimulator::mechTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
-  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(71): note: see declaration of 'std::array<int32_t,3>'
-e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(73): warning C4251: 'CombatSimulator::groundTroopTypes': class 'std::array<int32_t,6>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
-  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(73): note: see declaration of 'std::array<int32_t,6>'
-e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): warning C4251: 'CombatSimulator::mountedTroopTypes': class 'std::array<int32_t,2>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
-  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): note: see declaration of 'std::array<int32_t,2>'
+e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(73): warning C4251: 'CombatSimulator::meleeTroopTypes': class 'std::array<int32_t,5>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(73): note: see declaration of 'std::array<int32_t,5>'
+e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): warning C4251: 'CombatSimulator::rangedTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): note: see declaration of 'std::array<int32_t,3>'
+e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(75): warning C4251: 'CombatSimulator::mechTroopTypes': class 'std::array<int32_t,3>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(74): note: see declaration of 'std::array<int32_t,3>'
+e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(76): warning C4251: 'CombatSimulator::groundTroopTypes': class 'std::array<int32_t,6>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(76): note: see declaration of 'std::array<int32_t,6>'
+e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(77): warning C4251: 'CombatSimulator::mountedTroopTypes': class 'std::array<int32_t,2>' needs to have dll-interface to be used by clients of class 'CombatSimulator'
+  e:\evonyage1battlecalc\battletest\../BattleCalc/combatsimulator.h(77): note: see declaration of 'std::array<int32_t,2>'
      Creating library E:\EvonyAge1BattleCalc\x64\Release\BattleTest.lib and object E:\EvonyAge1BattleCalc\x64\Release\BattleTest.exp
   Generating code
-  6 of 261 functions ( 2.3%) were compiled, the rest were copied from previous compilation.
+  1 of 261 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    1 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   BattleTest.vcxproj -> E:\EvonyAge1BattleCalc\x64\Release\BattleTest.exe

@@ -43,6 +43,9 @@ struct defender {
 	int64_t fortifications[5] = { 0,0,0,0,0 };
 	int32_t wallLevel=0;
 	int8_t gateOpen;
+	float trapKillPower = 1.25;
+	float logKillPower = 1.25;
+	float rockKillPower = 1.25;
 };
 struct combatTroops {
 	int32_t location;
@@ -72,7 +75,7 @@ class DLLExport CombatSimulator {
 		static std::array<int32_t,3> mechTroopTypes;
 		static std::array<int32_t, 6> groundTroopTypes;
 		static std::array<int32_t, 2> mountedTroopTypes;
-		static float damageModifiers[12][12];
+		static float damageModifiers[12][17];
 		static void fight(attacker atk, defender def, battleResult* res);
 	private:
 		static int8_t compareSpeed(combatTroops& x, combatTroops& y);
